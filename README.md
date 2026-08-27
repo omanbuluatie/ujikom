@@ -197,7 +197,7 @@ database/dumps/       # SQL dump siap impor
 database/migrations/  # skema alternatif opsi B
 ```
 
-Folder `dokumentasi/` (panduan, naskah demo, CSV contoh) disimpan lokal dan **tidak ikut di-push** ke repo (lihat `.gitignore`).
+Folder `dokumentasi/` (panduan, naskah demo) disimpan lokal dan **tidak ikut di-push**, kecuali CSV contoh di `dokumentasi/contoh-data/` (lihat `.gitignore`).
 
 ---
 

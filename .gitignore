@@ -23,5 +23,7 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
-# Dokumentasi lokal (tidak ikut di-push ke repo)
-/dokumentasi
+# Dokumentasi lokal (tidak ikut di-push), kecuali contoh-data CSV
+/dokumentasi/*
+!/dokumentasi/contoh-data/
+!/dokumentasi/contoh-data/**
