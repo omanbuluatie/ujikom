@@ -1,0 +1,21 @@
+kode_obat,nama_obat,kategori,pemasok,harga,stok,stok_minimum,butuh_resep,kedaluwarsa
+KD-101,Paracetamol Forte 650mg Batch Lama,Analgesik,PT Farma Nusantara,4500,18,10,0,2026-07-15
+KD-102,Ambroxol Sirup 15mg/5ml Expired,Batuk,PT Farma Nusantara,9800,12,8,0,2026-08-01
+KD-103,Antasida Cair 100ml Expired,Lambung,PT Medika Sejahtera,7500,9,5,0,2026-06-20
+KD-104,CTM 4mg Strip Expired,Antihistamin,PT Medika Sejahtera,2200,25,10,0,2025-12-31
+KD-105,Povidone Iodine 60ml Expired,Antiseptik,PT OneMed Jaya,14500,7,5,0,2026-05-10
+KD-201,Vitamin B1 100mg Near Exp 30,Vitamin,PT Kalbe Sehat,5500,30,12,0,2026-09-10
+KD-202,Ibuprofen 200mg Near Exp 30,Analgesik,PT Dexa Sehat,3800,22,10,0,2026-09-15
+KD-203,Oralit Rasa Jeruk Near Exp 30,Diare,PT Kimia Sehat,3200,40,15,0,2026-09-20
+KD-204,Salbutamol 4mg Near Exp 30,Asma,PT Kimia Sehat,7000,14,8,1,2026-09-05
+KD-205,Omeprazole 40mg Near Exp 30,Lambung,PT Phapros Sehat,8500,16,8,1,2026-09-25
+KD-301,Cetirizine Sirup Near Exp 60,Antihistamin,PT Tempo Sehat,12000,28,10,0,2026-10-12
+KD-302,Zinc Anak 10mg Near Exp 60,Vitamin,PT Tempo Sehat,6000,35,12,0,2026-10-20
+KD-303,Cefixime 100mg Near Exp 60,Antibiotik,PT Sanbe Sehat,15000,20,8,1,2026-10-08
+KD-304,Metformin 850mg Near Exp 60,Metabolisme,PT Kalbe Sehat,4200,45,15,1,2026-10-28
+KD-305,Amlodipine 10mg Near Exp 60,Kardiovaskular,PT Dexa Sehat,5500,33,12,1,2026-10-15
+KD-401,Simvastatin 10mg Near Exp 90,Kardiovaskular,PT Kalbe Sehat,4800,38,12,1,2026-11-10
+KD-402,Vitamin C Kunyah 100mg Near Exp 90,Vitamin,PT Farma Nusantara,9000,50,15,0,2026-11-18
+KD-403,Betadine Ointment 15g Near Exp 90,Antiseptik,PT Mundi Sehat,24000,18,8,0,2026-11-05
+KD-404,Loperamide Anak Near Exp 90,Diare,PT Dexa Sehat,3500,27,10,0,2026-11-22
+KD-405,Dexamethasone 0.75mg Near Exp 90,Steroid,PT Kimia Sehat,3100,24,10,1,2026-11-28

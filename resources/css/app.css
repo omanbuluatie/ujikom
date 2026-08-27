@@ -1,0 +1,253 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+/*
+ * Klinik Makmur Jaya — loket apotek, bukan dashboard SaaS.
+ * Bahan: lampu neon ruang tunggu, tiket antrian sobek, label thermal batch FIFO.
+ */
+@theme {
+    --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Bricolage Grotesque', ui-sans-serif, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+    --color-lampu: #E6ECF0;
+    --color-tinta: #17202A;
+    --color-cap: #0A5C44;
+    --color-tiket: #FFD54A;
+    --color-tolak: #C23B22;
+    --color-laci: #3D4C58;
+    --color-kertas: #F4F7F9;
+}
+
+[x-cloak] { display: none !important; }
+
+body {
+    background: var(--color-lampu);
+    color: var(--color-tinta);
+    font-family: var(--font-sans);
+}
+
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+
+:focus-visible {
+    outline: 2px solid var(--color-tiket);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Tiket antrian: elemen tanda tangan UI */
+.tiket {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem 0.2rem 0.7rem;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+}
+.tiket--tunggu { background: var(--color-tiket); color: var(--color-tinta); }
+.tiket--selesai { background: var(--color-cap); color: #fff; }
+.tiket--tolak { background: var(--color-tolak); color: #fff; }
+.tiket--proses { background: var(--color-laci); color: #fff; }
+
+.strip-fifo {
+    background: var(--color-tiket);
+    color: var(--color-tinta);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    padding: 0.35rem 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.1rem;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+}
+.btn-utama { background: var(--color-cap); color: #fff; }
+.btn-utama:hover { filter: brightness(1.08); }
+.btn-tiket { background: var(--color-tiket); color: var(--color-tinta); }
+.btn-senyap { background: #fff; color: var(--color-tinta); box-shadow: inset 0 0 0 1px #c5d0d8; }
+.btn-bahaya { background: var(--color-tolak); color: #fff; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.input-lapangan,
+select.input-lapangan,
+textarea.input-lapangan {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #c5d0d8;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.95rem;
+    color: var(--color-tinta);
+}
+.input-lapangan:focus {
+    border-color: var(--color-cap);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-tiket) 55%, transparent);
+    outline: none;
+}
+
+.label-lapangan {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-laci);
+    margin-bottom: 0.3rem;
+}
+
+.tabel-meja {
+    width: 100%;
+    background: #fff;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.tabel-meja th {
+    text-align: left;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--color-tinta);
+    padding: 0.65rem 0.85rem;
+    font-weight: 600;
+}
+.tabel-meja td {
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid #e3eaee;
+    vertical-align: middle;
+}
+.tabel-meja tbody tr:hover { background: #f3f7f9; }
+
+.kartu {
+    background: #fff;
+    box-shadow: 0 1px 0 #d5dee4;
+}
+
+.nav-laci a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.85rem;
+    color: #d5dde4;
+    font-size: 0.9rem;
+    border-left: 3px solid transparent;
+}
+.nav-laci a:hover { background: rgb(255 255 255 / 0.06); color: #fff; }
+.nav-laci a.aktif {
+    border-left-color: var(--color-tiket);
+    background: rgb(255 213 74 / 0.12);
+    color: var(--color-tiket);
+}
+
+.papan-antrian {
+    background: #101820;
+    color: #d4efe4;
+    font-family: var(--font-mono);
+    padding: 1rem 1.25rem;
+    letter-spacing: 0.04em;
+}
+.papan-antrian .angka {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    color: var(--color-tiket);
+    line-height: 1;
+    letter-spacing: 0;
+}
+
+.langkah {
+    display: flex;
+    gap: 0;
+    font-size: 0.75rem;
+}
+.langkah li {
+    flex: 1;
+    padding: 0.45rem 0.6rem;
+    background: #fff;
+    border-right: 1px solid #e3eaee;
+    color: var(--color-laci);
+}
+.langkah li.now { background: var(--color-tiket); color: var(--color-tinta); font-weight: 700; }
+.langkah li.done { background: var(--color-cap); color: #fff; }
+
+.flash-ok { border-left: 4px solid var(--color-tiket); background: #fff; padding: 0.75rem 1rem; }
+.flash-err { border-left: 4px solid var(--color-tolak); background: #fff; padding: 0.75rem 1rem; color: var(--color-tolak); }
+
+/* Pemilih berkas: tombol jelas, bukan native Browse yang pudar */
+.berkas-pilih {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+.berkas-pilih input[type='file'] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+.berkas-pilih .tombol-pilih {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--color-tiket);
+    color: var(--color-tinta);
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.55rem 0.95rem;
+    cursor: pointer;
+    border: 0;
+    box-shadow: inset 0 -2px 0 rgb(0 0 0 / 0.12);
+}
+.berkas-pilih .tombol-pilih:hover { filter: brightness(1.05); }
+.berkas-pilih .tombol-pilih:focus-visible {
+    outline: 2px solid var(--color-cap);
+    outline-offset: 2px;
+}
+.berkas-pilih .nama-berkas {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-laci);
+    max-width: 16rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.berkas-pilih .nama-berkas.ada {
+    color: var(--color-cap);
+    font-weight: 600;
+}
+
+.zona-unggah {
+    border: 1px dashed #c5d0d8;
+    background: #F4F7F9;
+    padding: 0.85rem 1rem;
+}

@@ -1,0 +1,31 @@
+kode_obat,nama_obat,kategori,pemasok,harga,stok,stok_minimum,butuh_resep,kedaluwarsa
+XL-001,OBH Mix Anak 60ml,Batuk,PT Sinar Farma,12500,40,10,0,2027-03-01
+XL-002,OBH Combi Batuk Berdahak,Batuk,PT Sinar Farma,15000,35,10,0,2027-05-12
+XL-003,Salbutamol 2mg Tablet,Asma,PT Kimia Farma,6500,28,8,1,2026-12-15
+XL-004,Salbutamol Inhaler 100mcg,Asma,PT Kimia Farma,85000,12,5,1,2027-01-20
+XL-005,Zinc Sulfat 20mg,Vitamin,PT Nusantara Medika,4500,60,12,0,2027-08-20
+XL-006,Vitamin C 1000mg Effervescent,Vitamin,PT Kalbe Farma,18000,45,15,0,2027-06-30
+XL-007,Asam Mefenamat 500mg,Analgesik,PT Dexa Medica,3500,80,20,0,2027-04-18
+XL-008,Antasida DOEN Tablet,Lambung,PT Phapros,2500,100,25,0,2027-09-01
+XL-009,Omeprazole 20mg Kapsul,Lambung,PT Phapros,7000,50,15,1,2026-11-10
+XL-010,Amoxicillin Sirup 125mg/5ml,Antibiotik,PT Sanbe Farma,22000,18,8,1,2026-10-05
+XL-011,Cefadroxil 500mg Kapsul,Antibiotik,PT Sanbe Farma,9500,30,10,1,2027-02-28
+XL-012,Cetirizine 10mg,Antihistamin,PT Tempo Scan,4000,55,15,0,2027-07-15
+XL-013,Loratadine 10mg,Antihistamin,PT Tempo Scan,5500,42,12,0,2027-03-22
+XL-014,Betadine Gargle 100ml,Antiseptik,Mundipharma,28000,20,8,0,2028-01-01
+XL-015,Povidone Iodine 10% 30ml,Antiseptik,Mundipharma,16000,25,10,0,2027-12-12
+XL-016,Oralit 200ml Sachet,Diare,PT Kimia Farma,3000,120,30,0,2027-05-01
+XL-017,Loperamide 2mg,Diare,PT Dexa Medica,2500,70,20,0,2027-08-08
+XL-018,Metformin 500mg,Metabolisme,PT Kalbe Farma,3500,90,25,1,2026-09-30
+XL-019,Amlodipine 5mg,Kardiovaskular,PT Dexa Medica,4000,65,20,1,2027-01-15
+XL-020,Simvastatin 20mg,Kardiovaskular,PT Kalbe Farma,6000,48,15,1,2027-04-04
+XL-021,Paracetamol Sirup Anak 120mg/5ml,Analgesik,PT Sinar Farma,11000,55,15,0,2027-06-01
+XL-022,Ibuprofen Sirup Anak 100mg/5ml,Analgesik,PT Sinar Farma,14000,33,10,0,2027-02-14
+XL-023,Minyak Kayu Putih 60ml,Topikal,PT Cap Lang,18000,40,10,0,2028-03-01
+XL-024,Hot In Cream 60g,Topikal,PT Cap Lang,22000,22,8,0,2027-11-20
+XL-025,Kassa Steril 16x16,Alkes,PT OneMed,8000,200,50,0,2029-01-01
+XL-026,Alkohol 70% 100ml,Alkes,PT OneMed,9000,75,20,0,2028-06-15
+XL-027,Masker Medis 3 Ply (isi 50),Alkes,PT OneMed,35000,90,20,0,2028-12-31
+XL-028,Hand Sanitizer 500ml,Antiseptik,PT Nusantara Medika,27000,35,10,0,2027-09-09
+XL-029,Multivitamin Anak Sirup,Vitamin,PT Kalbe Farma,32000,25,8,0,2027-07-07
+XL-030,Calcium Carbonat 500mg,Vitamin,PT Phapros,5000,60,15,0,2027-10-10
