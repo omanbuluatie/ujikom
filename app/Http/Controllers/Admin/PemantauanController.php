@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\LogAudit;
 use App\Models\LogKesalahan;
+use App\Models\LogTautanVerifikasi;
 use App\Models\Peringatan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -23,6 +24,7 @@ class PemantauanController extends Controller
             'kesalahan' => LogKesalahan::query()->latest()->limit(20)->get(),
             'audit' => LogAudit::query()->with('pengguna')->latest()->limit(20)->get(),
             'peringatan' => Peringatan::query()->latest()->limit(15)->get(),
+            'tautanVerifikasi' => LogTautanVerifikasi::query()->with('pengguna')->latest()->limit(25)->get(),
             'sesi' => DB::table('sessions')->count(),
         ]);
     }

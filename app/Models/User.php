@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PeranPengguna;
+use App\Notifications\VerifikasiEmail as NotifikasiVerifikasiEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -51,5 +52,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function pesanan(): HasMany
     {
         return $this->hasMany(Pesanan::class);
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new NotifikasiVerifikasiEmail);
     }
 }

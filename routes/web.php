@@ -88,6 +88,7 @@ Route::middleware(['auth', 'verified', 'peran:admin'])->prefix('admin')->name('a
     Route::delete('/pemasok/{pemasok}', [PemasokController::class, 'destroy'])->name('pemasok.destroy');
     Route::get('/pelanggan', [PelangganController::class, 'index'])->name('pelanggan.index');
     Route::post('/pelanggan', [PelangganController::class, 'store'])->name('pelanggan.store');
+    Route::post('/pelanggan/{pelanggan}/verifikasi-email', [PelangganController::class, 'verifikasiEmail'])->name('pelanggan.verifikasi-email');
     Route::delete('/pelanggan/{pelanggan}', [PelangganController::class, 'destroy'])->name('pelanggan.destroy');
     Route::get('/transaksi', [AdminTransaksiController::class, 'index'])->name('transaksi.index');
     Route::get('/transaksi/{transaksi}', [AdminTransaksiController::class, 'show'])->name('transaksi.show');

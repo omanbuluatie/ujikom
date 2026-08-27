@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Autentikasi;
 
 use App\Http\Controllers\Controller;
+use App\Layanan\LayananVerifikasiEmail;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,9 +17,10 @@ class VerifikasiEmailController extends Controller
         return view('autentikasi.verifikasi-email');
     }
 
-    public function verifikasi(EmailVerificationRequest $request): RedirectResponse
+    public function verifikasi(EmailVerificationRequest $request, LayananVerifikasiEmail $verifikasi): RedirectResponse
     {
         $request->fulfill();
+        $verifikasi->tandaiTerpakai($request->user());
 
         return redirect()->route('katalog')->with('status', 'Email sudah diverifikasi. Silakan belanja.');
     }
@@ -27,6 +29,6 @@ class VerifikasiEmailController extends Controller
     {
         $request->user()->sendEmailVerificationNotification();
 
-        return back()->with('status', 'Tautan verifikasi dikirim ulang. Cek storage/logs/laravel.log (mail log).');
+        return back()->with('status', 'Tautan verifikasi dikirim ulang. Admin dapat melihat tautan di Pemantauan.');
     }
 }

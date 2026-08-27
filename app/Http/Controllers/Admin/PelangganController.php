@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\PeranPengguna;
 use App\Http\Controllers\Controller;
+use App\Layanan\LayananVerifikasiEmail;
 use App\Models\LogAudit;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -48,5 +49,20 @@ class PelangganController extends Controller
         LogAudit::catat('pelanggan.hapus', $pelanggan, $pelanggan->email);
 
         return back()->with('status', 'Pelanggan dihapus.');
+    }
+
+    public function verifikasiEmail(User $pelanggan, LayananVerifikasiEmail $verifikasi): RedirectResponse
+    {
+        abort_unless($pelanggan->peran === PeranPengguna::Pasien, 403);
+
+        if ($pelanggan->email_verified_at !== null) {
+            return back()->with('status', 'Email '.$pelanggan->email.' sudah terverifikasi.');
+        }
+
+        $pelanggan->update(['email_verified_at' => now()]);
+        $verifikasi->tandaiTerpakai($pelanggan);
+        LogAudit::catat('pelanggan.verifikasi-email', $pelanggan, $pelanggan->email);
+
+        return back()->with('status', 'Email '.$pelanggan->email.' berhasil diverifikasi. Pelanggan bisa checkout.');
     }
 }
