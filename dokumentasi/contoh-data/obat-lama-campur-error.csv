@@ -1,6 +1,0 @@
-kode_obat,nama_obat,kategori,pemasok,harga,stok,stok_minimum,butuh_resep,kedaluwarsa
-XL-031,Betahistine 6mg,Saraf,PT Dexa Medica,7500,40,10,1,2027-05-20
-XL-032,Dexamethasone 0.5mg,Steroid,PT Kimia Farma,3000,55,15,1,2026-12-01
-XL-033,,Batuk,PT Sinar Farma,10000,10,5,0,2027-01-01
-XL-034,Obat Rusak Contoh,Analgesik,PT Sinar Farma,-500,10,5,0,2027-01-01
-XL-035,Tanggal Salah Format,Vitamin,PT Kalbe Farma,5000,20,5,0,31-12-2027
