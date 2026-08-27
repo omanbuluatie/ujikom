@@ -23,7 +23,13 @@ class MigrasiController extends Controller
         return view('admin.migrasi.index', [
             'mapping' => $migrasi->mappingKolom(),
             'log' => LogMigrasi::query()->latest()->limit(50)->get(),
-            'batch' => LogMigrasi::query()->select('batch_migrasi_id')->distinct()->latest('id')->limit(10)->pluck('batch_migrasi_id'),
+            // MySQL 8: DISTINCT + ORDER BY kolom lain ditolak — pakai GROUP BY + MAX(id).
+            'batch' => LogMigrasi::query()
+                ->selectRaw('batch_migrasi_id, MAX(id) as latest_id')
+                ->groupBy('batch_migrasi_id')
+                ->orderByDesc('latest_id')
+                ->limit(10)
+                ->pluck('batch_migrasi_id'),
         ]);
     }
 
