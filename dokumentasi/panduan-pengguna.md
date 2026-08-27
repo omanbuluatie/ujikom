@@ -19,7 +19,7 @@ Dokumen ini adalah **panduan teknis pelanggan + paket dokumentasi proyek** untuk
 6. [Troubleshooting](#6-troubleshooting)  
 7. [FAQ](#7-faq)  
 8. [Dokumentasi API JSON](#8-dokumentasi-api-json)  
-9. [Matriks fitur → butir uji kompetensi](#9-matriks-fitur--butir-uji-kompetensi)  
+9. [Matriks fitur → butir uji + jejak kode (file/baris)](#9-matriks-fitur--butir-uji-kompetensi--jejak-kode)  
 10. [Piagam proyek](#10-piagam-proyek)  
 11. [WBS & lingkup](#11-wbs--lingkup)  
 12. [Jadwal 18 jam](#12-jadwal-18-jam)  
@@ -37,7 +37,7 @@ Dokumen ini adalah **panduan teknis pelanggan + paket dokumentasi proyek** untuk
 24. [UAT](#24-uat)  
 25. [Kontak & dukungan demo](#25-kontak--dukungan-demo)
 
-File pendukung di folder yang sama: `naskah-demo.md`, `contoh-data/*.csv`.
+File pendukung di folder yang sama: `naskah-demo.md`, `panduan-deploy.md` (deploy/pull produksi), `contoh-data/*.csv`.
 
 ---
 
@@ -540,7 +540,11 @@ Jika `q` kosong → `[]`. UI memakai **debounce ±300 ms**.
 
 ---
 
-## 9. Matriks fitur → butir uji kompetensi
+## 9. Matriks fitur → butir uji kompetensi (+ jejak kode)
+
+Nomor baris mengacu ke versi kode saat dokumen ini ditulis. Jika sedikit bergeser setelah edit, cari **nama method/kelas** di kolom file — itulah titik prosesnya.
+
+### 9.1 Ringkas: fitur → butir
 
 | Fitur di panduan ini | Butir penilaian |
 | --- | --- |
@@ -560,6 +564,88 @@ Jika `q` kosong → `[]`. UI memakai **debounce ±300 ms**.
 | Pemantauan job/error/audit | Monitoring resource + audit log |
 | Session 30 menit | Session timeout |
 | Bagian 10–24 di dokumen ini | Analisis, arsitektur, tools, risiko, UAT, API, dokumentasi |
+
+### 9.2 Jejak kode per butir (controller / layanan / job / rute)
+
+| Butir ujikom | Proses | File & baris (inti) | Rute / UI terkait |
+| --- | --- | --- | --- |
+| **Role-based access** (admin, apoteker, kasir, pasien) | Enum peran + middleware gate | `app/Enums/PeranPengguna.php`; `app/Http/Middleware/PastikanPeran.php` ~L16; alias di `bootstrap/app.php` ~L22–25; pengelompokan rute `routes/web.php` ~L66–101 | Prefix `/admin`, `/apoteker`, `/kasir` |
+| **Email verification** | `MustVerifyEmail` + halaman verifikasi | `app/Models/User.php` ~L17 (`implements MustVerifyEmail`); `app/Http/Controllers/Autentikasi/VerifikasiEmailController.php` ~L14–26; rute `routes/web.php` ~L45–49; middleware `verified` di ~L53 | `/email/verifikasi` |
+| **Password hashing** | Cast `hashed` saat simpan | `app/Models/User.php` ~L40–41; create di `MasukController::daftar` ~L69–74 | Form `/daftar` |
+| **Validasi password** | min 8 + huruf + angka | `MasukController::daftar` ~L60–67 (`Password::min(8)->letters()->numbers()`) | Form daftar |
+| **CSRF** | Token form web | Otomatis Laravel; disebut di `bootstrap/app.php` ~L12; view pakai `@csrf` (mis. `resources/views/autentikasi/masuk.blade.php`) | Semua form POST |
+| **XSS** | Escape output Blade | Semua view: `{{ }}` (bukan `{!! !!}` untuk input user) | — |
+| **SQL Injection** | Binding / Eloquent | `LayananPencarian::dasarKueri` ~L85–95; query laporan di `LayananLaporan.php` | Katalog & laporan |
+| **Session timeout 30 menit** | Konfigurasi sesi | `.env` / `.env.example` `SESSION_LIFETIME=30`; `config/session.php` | Habis idle → login ulang |
+| **Audit log** | Catat aksi penting | `app/Models/LogAudit.php` ~L31 `catat()`; dipanggil mis. `PesananController` ~L112, `MasukController` ~L80, `MigrasiController` ~L60; tampil `PemantauanController` ~L17 | Admin → Pemantauan |
+| **Error severity** (critical/warning/info) | Exception → `log_kesalahan` + peringatan | `bootstrap/app.php` ~L29–48; enum `TingkatKeparahan`; tampil Pemantauan | Admin → Pemantauan |
+| **Fuzzy search** | `cariFuzzy()` + `similar_text` | `app/Layanan/LayananPencarian.php` `cariFuzzy` ~L25–37, skor ~L56–75, `dasarKueri` ~L85; dipanggil `KatalogController::index` ~L14 | `/katalog` |
+| **Autocomplete** | API JSON limit 10 | `ObatAutocompleteController` ~L16–20; `LayananPencarian::autocomplete` ~L45–79; rute `web.php` ~L34; UI debounce `resources/views/katalog/index.blade.php` ~L19–20 | `GET /api/obat/autocomplete?q=` |
+| **Pagination / sort / filter** | Query katalog | `LayananPencarian::cariFuzzy` ~L25–37 (`paginate(12)`, `orderBy`); `KatalogController::index` ~L14 | `/katalog` |
+| **Algoritma FIFO** | Potong batch tertua dulu | `app/Layanan/LayananStok.php` `potongStokFifo` **~L68–112** (`orderBy('tanggal_masuk')`, `lockForUpdate`) | Dipakai online + kasir |
+| **Sinkron counter ↔ online** | Satu fungsi stok | Online: `JobPotongStok::handle` ~L29 → `potongStokFifo`; Kasir: `Kasir/TransaksiController::simpan` **~L75** | `/kasir/transaksi` vs katalog |
+| **Cart / keranjang** | Sesi | `KeranjangController` ~L18–34; `app/Layanan/LayananKeranjang.php`; rute `web.php` ~L54–56 | `/keranjang` |
+| **Checkout** | Buat pesanan | `PesananController::checkout` ~L34, `buat` ~L47–54; rute ~L59–60 | `/pesanan/checkout` |
+| **Pembayaran + job queue** | Tombol Bayar sekarang → antrian | Dispatch: `PesananController::prosesBayar` **~L101–112**; proses: `app/Jobs/JobProsesPembayaran.php` ~L19–53 (`onQueue('pembayaran')` ~L27) | `/pesanan/{id}/bayar` |
+| **Konfirmasi pesanan / email status** | Update status + mail log | `JobProsesPembayaran::handle` ~L38–48; `app/Mail/NotifikasiStatusPesanan.php`; view `resources/views/mail/status-pesanan.blade.php` | Log: `storage/logs/laravel.log` |
+| **Verifikasi resep** | Unggah → setuju/tolak | Unggah: `PesananController::unggahResep` ~L118–127; putuskan: `Apoteker/ResepController::putuskan` ~L25–41 → `JobPotongStok::dispatch` ~L41 | `/pesanan`, `/apoteker/resep` |
+| **Multimedia** (gambar obat & resep) | Store ke disk public | Obat: `Admin/ObatController` ~L97–103; resep: `PesananController` ~L127; pratinjau view apoteker/katalog; `php artisan storage:link` | Form obat, unggah resep |
+| **CRUD Obat** | Resource admin | `Admin/ObatController.php` (store ~L40, update, destroy); rute `web.php` ~L82 | `/admin/obat` |
+| **CRUD Kategori / Pemasok / Pelanggan** | Controller admin | `Admin/KategoriController.php`, `PemasokController.php`, `PelangganController.php`; rute ~L83–91 | Menu Admin |
+| **CRUD Transaksi** | Daftar / detail / batal | `Admin/TransaksiController.php` index ~L16, show ~L28, batalkan ~L35; rute ~L92–94 | `/admin/transaksi` |
+| **Dasbor penjualan** | Angka harian/mingguan/bulanan + grafik | `Admin/DasborController::index` ~L17–33; data SQL `LayananLaporan::ringkasanDasbor` ~L36, `penjualanPeriode` ~L18 | `/admin/dasbor` |
+| **Real-time (polling 10 dtk)** | Fetch berkala | Badge: `layouts/meja.blade.php` ~L14–15 (`setInterval(..., 10000)`); API `DasborController::polling` ~L36; ringkas `StatusRealtimeController` ~L17; rute ~L79–80 | `/admin/dasbor/polling`, `/admin/api/realtime` |
+| **Alert stok kritis** | Setelah FIFO | `LayananPeringatan::cekStokKritis` ~L18; dipanggil akhir `LayananStok::potongStokFifo` ~L111 | Dasbor / Pemantauan |
+| **Alert kedaluwarsa 30/60/90** | Scheduler + perintah demo | Logika: `LayananPeringatan::cekKedaluwarsa` ~L48; job `JobCekKedaluwarsa.php` ~L17; jadwal `routes/console.php` ~L10; perintah `app/Console/Commands/CekKedaluwarsaCommand.php` ~L15–28 | `apotek:cek-kedaluwarsa --sync` |
+| **Alert pesanan baru** | Setelah bayar | `LayananPeringatan::pesananBaru` ~L86; dipanggil `JobProsesPembayaran` ~L45 | Badge dasbor |
+| **Paralel / queue jobs** | Antrian bernama | Bayar: `JobProsesPembayaran` queue `pembayaran`; stok: `JobPotongStok` queue `stok`; impor: `JobImporBarisObat` + `Bus::batch` di `MigrasiController::impor` **~L59**; laporan: `JobBuatLaporan` dari `LaporanController::antrian` ~L52 | `queue:work --queue=pembayaran,stok,impor,laporan,default` |
+| **SQL laporan** | 4 jenis query | `app/Layanan/LayananLaporan.php`: penjualan ~L18, ringkasan ~L36, terlaris ~L49, kedaluwarsa ~L64, rekap ~L79 | `/admin/laporan` |
+| **Export PDF** | DomPDF | `Admin/LaporanController::pdf` ~L35; view `resources/views/pdf/laporan-penjualan.blade.php` | `/admin/laporan/pdf` |
+| **Migrasi teknologi (CSV)** | Mapping + validasi + impor | Mapping/validasi: `LayananMigrasi.php` `mappingKolom` ~L27, `imporBaris` ~L46; UI/dispatch: `MigrasiController::impor` ~L30–62; job baris `JobImporBarisObat.php` ~L29 | `/admin/migrasi` |
+| **Rollback migrasi** | Hapus obat per batch | `LayananMigrasi::rollback` ~L101; `MigrasiController::rollback` ~L65–71 | Tombol Rollback di Migrasi |
+| **Cutover checklist** | UI + dokumen | View `resources/views/admin/migrasi/index.blade.php`; prosedur di bagian 21 dokumen ini | Menu Migrasi |
+| **Monitoring resource** | Antrian, error, sesi, audit | `Admin/PemantauanController::index` ~L17; view `resources/views/admin/pemantauan/index.blade.php` | `/admin/pemantauan` |
+| **Library / framework** | Laravel 12, DomPDF, Alpine, Tailwind | `composer.json`, `package.json`, Vite `vite.config.js` | — |
+| **Update software (Git)** | Pull + migrate + build | Prosedur bagian 23 + `dokumentasi/panduan-deploy.md` | Repo GitHub |
+| **Dokumentasi API** | 2 endpoint JSON | Autocomplete: di atas; realtime: `StatusRealtimeController.php` ~L17; penjelasan lengkap bagian 8 | `/api/obat/autocomplete`, `/admin/api/realtime` |
+
+### 9.3 Alur bisnis → file (urutan baca untuk demo)
+
+```
+Pasien daftar/masuk
+  → MasukController.php (~L26, ~L58)
+  → User.php (MustVerifyEmail, hashed)
+
+Katalog fuzzy + autocomplete
+  → KatalogController.php (~L14) + LayananPencarian.php
+  → ObatAutocompleteController.php + katalog/index.blade.php (~L19)
+
+Keranjang → checkout → bayar
+  → KeranjangController.php + LayananKeranjang.php
+  → PesananController.php buat(~L47) → prosesBayar(~L101)
+  → JobProsesPembayaran.php (~L30) → Mail + JobPotongStok (jika bebas)
+
+Resep
+  → PesananController::unggahResep (~L118)
+  → Apoteker/ResepController::putuskan (~L25) → JobPotongStok
+
+FIFO
+  → LayananStok::potongStokFifo (~L68)  ← juga Kasir/TransaksiController (~L75)
+
+Admin dasbor / laporan / migrasi / pantau
+  → DasborController.php, LaporanController.php,
+    MigrasiController.php + LayananMigrasi.php,
+    PemantauanController.php
+```
+
+### 9.4 Enum & migrasi tabel (referensi cepat)
+
+| Domain | File |
+| --- | --- |
+| Status pesanan / resep | `app/Enums/StatusPesanan.php`, `StatusResep.php` |
+| Tingkat keparahan | `app/Enums/TingkatKeparahan.php` |
+| Skema DB | `database/migrations/2026_08_27_100000_*.php`, `100100_*.php`, `100200_*.php` |
+| Data demo | `database/seeders/DatabaseSeeder.php` |
 
 ---
 
