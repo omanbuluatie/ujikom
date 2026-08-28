@@ -199,6 +199,8 @@ database/migrations/  # skema alternatif opsi B
 
 Folder `dokumentasi/` (panduan, naskah demo) disimpan lokal dan **tidak ikut di-push**, kecuali CSV contoh di `dokumentasi/contoh-data/` (lihat `.gitignore`).
 
+**Deploy produksi:** lihat [PANDUAN-PRODUKSI.md](PANDUAN-PRODUKSI.md). **Revisi domain transaksi:** lihat [REVISI.md](REVISI.md).
+
 ---
 
 ## Perintah sering dipakai
