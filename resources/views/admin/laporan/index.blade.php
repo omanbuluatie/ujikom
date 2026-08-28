@@ -40,7 +40,7 @@
         @foreach($rekap as $p)
             <tr>
                 <td class="font-mono text-xs">{{ $p->created_at->format('d.m.Y H:i') }}</td>
-                <td class="font-mono text-xs">{{ $p->nomor }}</td>
+                <td class="font-mono text-xs">{{ $p->kode_transaksi }}</td>
                 <td class="font-mono">{{ number_format($p->total, 0, ',', '.') }}</td>
                 <td>{{ $p->status->label() }}</td>
             </tr>

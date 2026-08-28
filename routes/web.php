@@ -18,7 +18,7 @@ use App\Http\Controllers\Autentikasi\VerifikasiEmailController;
 use App\Http\Controllers\KatalogController;
 use App\Http\Controllers\Kasir\TransaksiController as KasirTransaksiController;
 use App\Http\Controllers\KeranjangController;
-use App\Http\Controllers\PesananController;
+use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -55,12 +55,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/keranjang/{obat}', [KeranjangController::class, 'tambah'])->name('keranjang.tambah');
     Route::patch('/keranjang/{obat}', [KeranjangController::class, 'ubah'])->name('keranjang.ubah');
 
-    Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan.index');
-    Route::get('/pesanan/checkout', [PesananController::class, 'checkout'])->name('pesanan.checkout');
-    Route::post('/pesanan', [PesananController::class, 'buat'])->name('pesanan.buat');
-    Route::get('/pesanan/{pesanan}/bayar', [PesananController::class, 'bayar'])->name('pesanan.bayar');
-    Route::post('/pesanan/{pesanan}/bayar', [PesananController::class, 'prosesBayar'])->name('pesanan.proses-bayar');
-    Route::post('/pesanan/{pesanan}/resep', [PesananController::class, 'unggahResep'])->name('pesanan.resep');
+    Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/transaksi/checkout', [TransaksiController::class, 'checkout'])->name('transaksi.checkout');
+    Route::post('/transaksi', [TransaksiController::class, 'buat'])->name('transaksi.buat');
+    Route::get('/transaksi/{transaksi}/bayar', [TransaksiController::class, 'bayar'])->name('transaksi.bayar');
+    Route::post('/transaksi/{transaksi}/bayar', [TransaksiController::class, 'prosesBayar'])->name('transaksi.proses-bayar');
+    Route::post('/transaksi/{transaksi}/resep', [TransaksiController::class, 'unggahResep'])->name('transaksi.resep');
 });
 
 Route::middleware(['auth', 'verified', 'peran:kasir,admin'])->group(function () {
@@ -91,7 +91,10 @@ Route::middleware(['auth', 'verified', 'peran:admin'])->prefix('admin')->name('a
     Route::post('/pelanggan/{pelanggan}/verifikasi-email', [PelangganController::class, 'verifikasiEmail'])->name('pelanggan.verifikasi-email');
     Route::delete('/pelanggan/{pelanggan}', [PelangganController::class, 'destroy'])->name('pelanggan.destroy');
     Route::get('/transaksi', [AdminTransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/transaksi/ekspor-csv', [AdminTransaksiController::class, 'eksporCsv'])->name('transaksi.ekspor-csv');
     Route::get('/transaksi/{transaksi}', [AdminTransaksiController::class, 'show'])->name('transaksi.show');
+    Route::post('/transaksi/{transaksi}/setujui-bayar', [AdminTransaksiController::class, 'setujuiPembayaran'])->name('transaksi.setujui-bayar');
+    Route::post('/transaksi/{transaksi}/tolak-bayar', [AdminTransaksiController::class, 'tolakPembayaran'])->name('transaksi.tolak-bayar');
     Route::post('/transaksi/{transaksi}/batal', [AdminTransaksiController::class, 'batalkan'])->name('transaksi.batal');
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
     Route::get('/laporan/pdf', [LaporanController::class, 'pdf'])->name('laporan.pdf');

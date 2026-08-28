@@ -18,7 +18,7 @@
                 <td class="font-mono text-xs">{{ $obat->kode }}</td>
                 <td>{{ $obat->nama }} @if($obat->butuh_resep)<span class="tiket tiket--tolak">resep</span>@endif</td>
                 <td>{{ $obat->kategori->nama }}</td>
-                <td class="font-mono">{{ number_format($obat->harga, 0, ',', '.') }}</td>
+                <td class="font-mono">{{ number_format($obat->harga, 2, ',', '.') }}</td>
                 <td class="font-mono {{ $obat->batch_sum_sisa <= $obat->stok_minimum ? 'text-[#C23B22]' : '' }}">{{ $obat->batch_sum_sisa }}</td>
                 <td class="whitespace-nowrap">
                     <a href="{{ route('admin.obat.edit', $obat) }}" class="text-sm underline">Ubah</a>

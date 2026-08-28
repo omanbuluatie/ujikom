@@ -17,7 +17,7 @@ class MutasiStok extends Model
         'jenis',
         'jumlah',
         'sumber',
-        'pesanan_id',
+        'transaksi_id',
     ];
 
     protected function casts(): array

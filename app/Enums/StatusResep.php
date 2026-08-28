@@ -2,20 +2,18 @@
 
 namespace App\Enums;
 
-/**
- * UJIKOM — Verifikasi resep (mengganti proses manual di klinik).
- */
+/** REVISI — Resep: pending (default) | verifikasi | ditolak */
 enum StatusResep: string
 {
-    case Menunggu = 'menunggu';
-    case Disetujui = 'disetujui';
+    case Pending = 'pending';
+    case Verifikasi = 'verifikasi';
     case Ditolak = 'ditolak';
 
     public function label(): string
     {
         return match ($this) {
-            self::Menunggu => 'Menunggu',
-            self::Disetujui => 'Disetujui',
+            self::Pending => 'Pending',
+            self::Verifikasi => 'Terverifikasi',
             self::Ditolak => 'Ditolak',
         };
     }

@@ -5,12 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/** UJIKOM — CRUD Kategori. */
+/**
+ * REVISI — CRUD Kategori obat.
+ * Field: nama, slot, deskripsi, is_active, email.
+ */
 class KategoriObat extends Model
 {
     protected $table = 'kategori_obat';
 
-    protected $fillable = ['nama', 'slug'];
+    protected $fillable = [
+        'nama',
+        'slug',
+        'slot',
+        'deskripsi',
+        'is_active',
+        'email',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'slot' => 'integer',
+            'is_active' => 'boolean',
+        ];
+    }
 
     public function obat(): HasMany
     {

@@ -29,7 +29,7 @@ class Obat extends Model
     protected function casts(): array
     {
         return [
-            'harga' => 'integer',
+            'harga' => 'decimal:2',
             'stok_minimum' => 'integer',
             'butuh_resep' => 'boolean',
         ];

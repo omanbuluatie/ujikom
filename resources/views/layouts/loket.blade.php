@@ -28,7 +28,7 @@
                     <a href="{{ route('keranjang') }}" class="{{ request()->routeIs('keranjang*') ? 'font-semibold' : 'text-[#3D4C58]' }}">
                         Keranjang @if($jumlahKeranjang > 0)<span class="tiket tiket--tunggu">{{ $jumlahKeranjang }}</span>@endif
                     </a>
-                    <a href="{{ route('pesanan.index') }}" class="{{ request()->routeIs('pesanan*') ? 'font-semibold' : 'text-[#3D4C58]' }}">Pesanan</a>
+                    <a href="{{ route('transaksi.index') }}" class="{{ request()->routeIs('transaksi*') ? 'font-semibold' : 'text-[#3D4C58]' }}">Transaksi</a>
                 @endauth
             </nav>
             <div class="flex items-center gap-3 text-sm">
@@ -60,7 +60,7 @@
         <a class="flex-1 py-3 text-center" href="{{ route('katalog') }}">Katalog</a>
         @auth
             <a class="flex-1 py-3 text-center" href="{{ route('keranjang') }}">Keranjang</a>
-            <a class="flex-1 py-3 text-center" href="{{ route('pesanan.index') }}">Pesanan</a>
+            <a class="flex-1 py-3 text-center" href="{{ route('transaksi.index') }}">Transaksi</a>
         @else
             <a class="flex-1 py-3 text-center" href="{{ route('masuk') }}">Masuk</a>
         @endauth

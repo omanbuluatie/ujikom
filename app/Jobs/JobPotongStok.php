@@ -2,44 +2,54 @@
 
 namespace App\Jobs;
 
-use App\Enums\StatusPesanan;
+use App\Enums\JenisNotifikasi;
+use App\Enums\StatusTransaksi;
 use App\Exceptions\StokTidakCukupException;
+use App\Layanan\LayananNotifikasi;
 use App\Layanan\LayananPeringatan;
 use App\Layanan\LayananStok;
 use App\Models\LogAudit;
-use App\Models\Pesanan;
+use App\Models\Transaksi;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-/**
- * UJIKOM — Job queue update stok.
- * Memanggil LayananStok::potongStokFifo() — fungsi yang sama dengan kasir.
- */
+/** REVISI — Job potong stok FIFO untuk transaksi online. */
 class JobPotongStok implements ShouldQueue
 {
     use Queueable;
 
     public int $tries = 2;
 
-    public function __construct(public int $pesananId)
+    public function __construct(public int $transaksiId)
     {
         $this->onQueue('stok');
     }
 
-    public function handle(LayananStok $stok, LayananPeringatan $peringatan): void
+    public function handle(LayananStok $stok, LayananPeringatan $peringatan, LayananNotifikasi $notifikasi): void
     {
-        $pesanan = Pesanan::query()->with('item.obat')->findOrFail($this->pesananId);
+        $transaksi = Transaksi::query()->with('item.obat', 'pelanggan')->findOrFail($this->transaksiId);
 
         try {
-            foreach ($pesanan->item as $item) {
-                $stok->potongStokFifo($item->obat, $item->jumlah, 'pesanan-online', $pesanan->id);
+            foreach ($transaksi->item as $item) {
+                $stok->potongStokFifo($item->obat, $item->jumlah, 'transaksi-online', $transaksi->id);
             }
 
-            $pesanan->update(['status' => StatusPesanan::Selesai]);
-            LogAudit::catat('stok.fifo', $pesanan, 'Stok dipotong FIFO untuk '.$pesanan->nomor);
+            $transaksi->update(['status' => StatusTransaksi::Selesai]);
+            LogAudit::catat('stok.fifo', $transaksi, 'FIFO '.$transaksi->kode_transaksi);
+
+            $notifikasi->untukTransaksi(
+                $transaksi,
+                JenisNotifikasi::Selesai,
+                'Transaksi '.$transaksi->kode_transaksi.' selesai. Obat siap diambil/dikirim.'
+            );
         } catch (StokTidakCukupException $e) {
-            $pesanan->update(['status' => StatusPesanan::Dibatalkan, 'catatan' => $e->getMessage()]);
+            $transaksi->update(['status' => StatusTransaksi::Dibatalkan, 'catatan' => $e->getMessage()]);
             $peringatan->kesalahan('Stok tidak cukup', $e->getMessage());
+            $notifikasi->untukTransaksi(
+                $transaksi,
+                JenisNotifikasi::TransaksiDibatalkan,
+                'Transaksi '.$transaksi->kode_transaksi.' dibatalkan: '.$e->getMessage()
+            );
             throw $e;
         }
     }

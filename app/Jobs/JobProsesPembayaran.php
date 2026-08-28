@@ -2,19 +2,20 @@
 
 namespace App\Jobs;
 
-use App\Enums\StatusPesanan;
+use App\Enums\JenisNotifikasi;
+use App\Enums\StatusTransaksi;
+use App\Layanan\LayananNotifikasi;
 use App\Layanan\LayananPeringatan;
-use App\Mail\NotifikasiStatusPesanan;
+use App\Mail\NotifikasiStatusTransaksi;
 use App\Models\LogAudit;
-use App\Models\Pesanan;
+use App\Models\Transaksi;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Mail;
 
 /**
- * UJIKOM — Job queue pembayaran + pemrograman paralel.
- * Request HTTP hanya men-dispatch job; worker memproses (bisa 2 worker bersamaan).
- * Pembayaran disimulasikan (tanpa gateway) — cukup sebagai bukti antrian pembayaran.
+ * REVISI — Job verifikasi pembayaran (bukti upload).
+ * Simulasi demo: otomatis setujui → diproses. Produksi: admin setujui manual.
  */
 class JobProsesPembayaran implements ShouldQueue
 {
@@ -22,33 +23,43 @@ class JobProsesPembayaran implements ShouldQueue
 
     public int $tries = 3;
 
-    public function __construct(public int $pesananId)
+    public function __construct(public int $transaksiId)
     {
         $this->onQueue('pembayaran');
     }
 
-    public function handle(LayananPeringatan $peringatan): void
+    public function handle(LayananPeringatan $peringatan, LayananNotifikasi $notifikasi): void
     {
-        $pesanan = Pesanan::query()->with('item.obat', 'pelanggan')->findOrFail($this->pesananId);
+        $transaksi = Transaksi::query()->with('item.obat', 'pelanggan')->findOrFail($this->transaksiId);
 
-        if ($pesanan->status !== StatusPesanan::MenungguBayar) {
+        if ($transaksi->status !== StatusTransaksi::Pending || ! $transaksi->bukti_pembayaran) {
             return;
         }
 
-        $pesanan->update([
-            'status' => $pesanan->butuhResep()
-                ? StatusPesanan::MenungguResep
-                : StatusPesanan::Dikonfirmasi,
+        // Demo: auto-approve setelah bukti terupload (robust: cek bukti ada).
+        $transaksi->update([
+            'status' => StatusTransaksi::Diproses,
             'dibayar_pada' => now(),
         ]);
 
-        $peringatan->pesananBaru($pesanan);
-        LogAudit::catat('pembayaran.sukses', $pesanan, $pesanan->nomor);
+        $peringatan->transaksiBaru($transaksi);
+        LogAudit::catat('pembayaran.sukses', $transaksi, $transaksi->kode_transaksi);
 
-        Mail::to($pesanan->pelanggan->email)->send(new NotifikasiStatusPesanan($pesanan->fresh()));
+        $notifikasi->untukTransaksi(
+            $transaksi,
+            JenisNotifikasi::PembayaranDiterima,
+            'Pembayaran '.$transaksi->kode_transaksi.' diterima via '.$transaksi->metode_pembayaran.'.'
+        );
+        $notifikasi->untukTransaksi(
+            $transaksi->fresh(),
+            JenisNotifikasi::SedangDiproses,
+            'Transaksi '.$transaksi->kode_transaksi.' sedang diproses.'
+        );
 
-        if (! $pesanan->butuhResep()) {
-            JobPotongStok::dispatch($pesanan->id);
+        Mail::to($transaksi->pelanggan->email)->send(new NotifikasiStatusTransaksi($transaksi->fresh()));
+
+        if (! $transaksi->butuhResep()) {
+            JobPotongStok::dispatch($transaksi->id);
         }
     }
 }

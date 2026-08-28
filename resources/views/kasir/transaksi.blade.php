@@ -40,7 +40,7 @@
                                     <p class="font-mono text-[11px] text-[#3D4C58]">{{ $obat->kode }}</p>
                                 </td>
                                 <td class="font-mono {{ ($obat->batch_sum_sisa ?? 0) <= $obat->stok_minimum ? 'text-[#C23B22] font-semibold' : '' }}">{{ $obat->batch_sum_sisa ?? 0 }}</td>
-                                <td class="font-mono" data-harga="{{ $obat->harga }}">{{ number_format($obat->harga, 0, ',', '.') }}</td>
+                                <td class="font-mono" data-harga="{{ $obat->harga }}">{{ number_format($obat->harga, 2, ',', '.') }}</td>
                                 <td><input type="number" name="jumlah[{{ $obat->id }}]" value="1" min="1" class="input-lapangan w-16" @input="hitung()"></td>
                             </tr>
                         @endforeach

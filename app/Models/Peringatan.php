@@ -20,7 +20,7 @@ class Peringatan extends Model
         'judul',
         'pesan',
         'obat_id',
-        'pesanan_id',
+        'transaksi_id',
         'dibaca_pada',
     ];
 

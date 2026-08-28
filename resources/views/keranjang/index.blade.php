@@ -15,22 +15,22 @@
                         <p class="font-medium">{{ $baris['obat']->nama }}</p>
                         <p class="font-mono text-[11px] text-[#3D4C58]">{{ $baris['obat']->kode }} @if($baris['obat']->butuh_resep) · resep @endif</p>
                     </td>
-                    <td class="font-mono">Rp {{ number_format($baris['obat']->harga, 0, ',', '.') }}</td>
+                    <td class="font-mono">Rp {{ number_format($baris['obat']->harga, 2, ',', '.') }}</td>
                     <td>
                         <form method="POST" action="{{ route('keranjang.ubah', $baris['obat']) }}">
                             @csrf @method('PATCH')
                             <input type="number" name="jumlah" value="{{ $baris['jumlah'] }}" min="0" class="input-lapangan w-20" onchange="this.form.submit()" aria-label="Ubah jumlah">
                         </form>
                     </td>
-                    <td class="font-mono">Rp {{ number_format($baris['subtotal'], 0, ',', '.') }}</td>
+                    <td class="font-mono">Rp {{ number_format($baris['subtotal'], 2, ',', '.') }}</td>
                 </tr>
             @endforeach
             </tbody>
         </table>
     </div>
     <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
-        <p class="font-display text-2xl">Total Rp {{ number_format($total, 0, ',', '.') }}</p>
-        <a href="{{ route('pesanan.checkout') }}" class="btn btn-tiket">Lanjut checkout</a>
+        <p class="font-display text-2xl">Total Rp {{ number_format($total, 2, ',', '.') }}</p>
+        <a href="{{ route('transaksi.checkout') }}" class="btn btn-tiket">Lanjut checkout</a>
     </div>
 @endif
 @endsection

@@ -49,9 +49,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return in_array($this->peran, $daftarPeran, true);
     }
 
-    public function pesanan(): HasMany
+    public function transaksi(): HasMany
     {
-        return $this->hasMany(Pesanan::class);
+        return $this->hasMany(Transaksi::class);
+    }
+
+    public function notifikasi(): HasMany
+    {
+        return $this->hasMany(Notifikasi::class);
     }
 
     public function sendEmailVerificationNotification(): void

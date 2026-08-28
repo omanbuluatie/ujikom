@@ -90,7 +90,7 @@ class ObatController extends Controller
             'nama' => ['required', 'string', 'max:150'],
             'kategori_obat_id' => ['required', 'exists:kategori_obat,id'],
             'pemasok_id' => ['nullable', 'exists:pemasok,id'],
-            'harga' => ['required', 'integer', 'min:0'],
+            'harga' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
             'stok_minimum' => ['required', 'integer', 'min:0'],
             'butuh_resep' => ['sometimes', 'boolean'],
             'deskripsi' => ['nullable', 'string'],

@@ -7,7 +7,7 @@ use App\Enums\TingkatKeparahan;
 use App\Models\BatchObat;
 use App\Models\Obat;
 use App\Models\Peringatan;
-use App\Models\Pesanan;
+use App\Models\Transaksi;
 
 /**
  * UJIKOM — Alert notification:
@@ -83,14 +83,14 @@ class LayananPeringatan
         return $jumlah;
     }
 
-    public function pesananBaru(Pesanan $pesanan): void
+    public function transaksiBaru(Transaksi $transaksi): void
     {
         Peringatan::query()->create([
             'jenis' => JenisPeringatan::PesananBaru,
             'tingkat' => TingkatKeparahan::Info,
-            'judul' => 'Pesanan baru '.$pesanan->nomor,
-            'pesan' => 'Total Rp '.number_format($pesanan->total, 0, ',', '.'),
-            'pesanan_id' => $pesanan->id,
+            'judul' => 'Transaksi baru '.$transaksi->kode_transaksi,
+            'pesan' => 'Total Rp '.number_format((float) $transaksi->total, 2, ',', '.'),
+            'transaksi_id' => $transaksi->id,
         ]);
     }
 

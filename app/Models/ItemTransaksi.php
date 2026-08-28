@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ItemPesanan extends Model
+/** REVISI — Item baris transaksi (dulu item_pesanan). Harga desimal. */
+class ItemTransaksi extends Model
 {
-    protected $table = 'item_pesanan';
+    protected $table = 'item_transaksi';
 
     protected $fillable = [
-        'pesanan_id',
+        'transaksi_id',
         'obat_id',
         'jumlah',
         'harga_satuan',
@@ -20,15 +21,14 @@ class ItemPesanan extends Model
     protected function casts(): array
     {
         return [
-            'jumlah' => 'integer',
-            'harga_satuan' => 'integer',
-            'subtotal' => 'integer',
+            'harga_satuan' => 'decimal:2',
+            'subtotal' => 'decimal:2',
         ];
     }
 
-    public function pesanan(): BelongsTo
+    public function transaksi(): BelongsTo
     {
-        return $this->belongsTo(Pesanan::class);
+        return $this->belongsTo(Transaksi::class, 'transaksi_id');
     }
 
     public function obat(): BelongsTo

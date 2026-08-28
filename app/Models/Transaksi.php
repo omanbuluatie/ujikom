@@ -2,26 +2,30 @@
 
 namespace App\Models;
 
-use App\Enums\StatusPesanan;
+use App\Enums\StatusTransaksi;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * UJIKOM — CRUD Transaksi + alur e-commerce.
- * Sumber `online` atau `kasir` memakai stok yang sama (LayananStok).
+ * REVISI — Transaksi (dulu pesanan).
+ * kode_transaksi, status pending/diproses/selesai/dibatalkan,
+ * metode_pembayaran, bukti_pembayaran, alamat_pengiriman.
  */
-class Pesanan extends Model
+class Transaksi extends Model
 {
-    protected $table = 'pesanan';
+    protected $table = 'transaksi';
 
     protected $fillable = [
-        'nomor',
+        'kode_transaksi',
         'user_id',
         'status',
         'sumber',
         'total',
+        'metode_pembayaran',
+        'bukti_pembayaran',
+        'alamat_pengiriman',
         'dibayar_pada',
         'catatan',
     ];
@@ -29,8 +33,8 @@ class Pesanan extends Model
     protected function casts(): array
     {
         return [
-            'status' => StatusPesanan::class,
-            'total' => 'integer',
+            'status' => StatusTransaksi::class,
+            'total' => 'decimal:2',
             'dibayar_pada' => 'datetime',
         ];
     }
@@ -42,12 +46,17 @@ class Pesanan extends Model
 
     public function item(): HasMany
     {
-        return $this->hasMany(ItemPesanan::class, 'pesanan_id');
+        return $this->hasMany(ItemTransaksi::class, 'transaksi_id');
     }
 
     public function resep(): HasOne
     {
-        return $this->hasOne(Resep::class, 'pesanan_id');
+        return $this->hasOne(Resep::class, 'transaksi_id');
+    }
+
+    public function notifikasi(): HasMany
+    {
+        return $this->hasMany(Notifikasi::class, 'transaksi_id');
     }
 
     public function butuhResep(): bool
@@ -55,8 +64,8 @@ class Pesanan extends Model
         return $this->item()->whereHas('obat', fn ($q) => $q->where('butuh_resep', true))->exists();
     }
 
-    public static function buatNomor(): string
+    public static function buatKode(): string
     {
-        return 'PSN-'.now()->format('Ymd').'-'.str_pad((string) (static::max('id') + 1), 4, '0', STR_PAD_LEFT);
+        return 'TRX-'.now()->format('Ymd').'-'.str_pad((string) ((static::max('id') ?? 0) + 1), 4, '0', STR_PAD_LEFT);
     }
 }

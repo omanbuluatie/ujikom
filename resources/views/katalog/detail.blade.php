@@ -17,7 +17,7 @@
         @if($obat->butuh_resep)
             <p class="mt-2"><span class="tiket tiket--tolak">Wajib resep</span> unggah foto resep setelah bayar.</p>
         @endif
-        <p class="mt-4 font-display text-3xl">Rp {{ number_format($obat->harga, 0, ',', '.') }}</p>
+        <p class="mt-4 font-display text-3xl">Rp {{ number_format($obat->harga, 2, ',', '.') }}</p>
         <p class="mt-4 text-sm leading-relaxed text-[#3D4C58]">{{ $obat->deskripsi ?: 'Tidak ada deskripsi tambahan.' }}</p>
 
         <h2 class="mt-8 font-mono text-[11px] uppercase tracking-widest text-[#3D4C58]">Urutan keluar batch</h2>

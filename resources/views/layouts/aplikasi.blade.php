@@ -21,7 +21,7 @@
                 @auth
                     @if(auth()->user()->adalah(\App\Enums\PeranPengguna::Pasien, \App\Enums\PeranPengguna::Admin))
                         <a href="{{ route('keranjang') }}" class="block rounded-r px-3 py-2 text-white/80 hover:bg-white/10">Keranjang</a>
-                        <a href="{{ route('pesanan.index') }}" class="block rounded-r px-3 py-2 text-white/80 hover:bg-white/10">Pesanan saya</a>
+                        <a href="{{ route('transaksi.index') }}" class="block rounded-r px-3 py-2 text-white/80 hover:bg-white/10">Transaksi saya</a>
                     @endif
                     @if(auth()->user()->adalah(\App\Enums\PeranPengguna::Kasir, \App\Enums\PeranPengguna::Admin))
                         <a href="{{ route('kasir.transaksi') }}" class="block rounded-r px-3 py-2 text-white/80 hover:bg-white/10">Kasir</a>

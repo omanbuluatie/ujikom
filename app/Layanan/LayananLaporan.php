@@ -2,10 +2,10 @@
 
 namespace App\Layanan;
 
-use App\Enums\StatusPesanan;
-use App\Models\ItemPesanan;
+use App\Enums\StatusTransaksi;
+use App\Models\ItemTransaksi;
 use App\Models\Obat;
-use App\Models\Pesanan;
+use App\Models\Transaksi;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -17,14 +17,11 @@ class LayananLaporan
 {
     public function penjualanPeriode(string $dari, string $sampai): Collection
     {
-        return Pesanan::query()
+        return Transaksi::query()
             ->selectRaw('DATE(dibayar_pada) as tanggal, COUNT(*) as jumlah_transaksi, SUM(total) as pendapatan')
             ->whereIn('status', [
-                StatusPesanan::Dikonfirmasi->value,
-                StatusPesanan::MenungguResep->value,
-                StatusPesanan::MenungguVerifikasi->value,
-                StatusPesanan::Diproses->value,
-                StatusPesanan::Selesai->value,
+                StatusTransaksi::Diproses->value,
+                StatusTransaksi::Selesai->value,
             ])
             ->whereNotNull('dibayar_pada')
             ->whereBetween('dibayar_pada', [$dari.' 00:00:00', $sampai.' 23:59:59'])
@@ -35,7 +32,7 @@ class LayananLaporan
 
     public function ringkasanDasbor(): array
     {
-        $dasar = Pesanan::query()->whereNotNull('dibayar_pada')->where('status', '!=', StatusPesanan::Dibatalkan);
+        $dasar = Transaksi::query()->whereNotNull('dibayar_pada')->where('status', '!=', StatusTransaksi::Dibatalkan);
 
         return [
             'harian' => (clone $dasar)->whereDate('dibayar_pada', today())->sum('total'),
@@ -45,14 +42,14 @@ class LayananLaporan
         ];
     }
 
-    /** Obat terlaris berdasarkan SUM jumlah item pesanan yang sudah dibayar. */
+    /** Obat terlaris berdasarkan SUM jumlah item transaksi yang sudah dibayar. */
     public function obatTerlaris(int $batas = 10): Collection
     {
-        return ItemPesanan::query()
+        return ItemTransaksi::query()
             ->select('obat_id', DB::raw('SUM(jumlah) as total_terjual'), DB::raw('SUM(subtotal) as omzet'))
-            ->whereHas('pesanan', function ($q) {
+            ->whereHas('transaksi', function ($q) {
                 $q->whereNotNull('dibayar_pada')
-                    ->where('status', '!=', StatusPesanan::Dibatalkan);
+                    ->where('status', '!=', StatusTransaksi::Dibatalkan);
             })
             ->groupBy('obat_id')
             ->orderByDesc('total_terjual')
@@ -78,7 +75,7 @@ class LayananLaporan
 
     public function rekapTransaksi(string $dari, string $sampai)
     {
-        return Pesanan::query()
+        return Transaksi::query()
             ->with(['pelanggan', 'item.obat'])
             ->whereBetween('created_at', [$dari.' 00:00:00', $sampai.' 23:59:59'])
             ->orderByDesc('id')

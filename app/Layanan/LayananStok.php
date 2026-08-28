@@ -65,13 +65,13 @@ class LayananStok
      *
      * @throws StokTidakCukupException
      */
-    public function potongStokFifo(Obat $obat, int $jumlahDiminta, string $sumber, ?int $pesananId = null): void
+    public function potongStokFifo(Obat $obat, int $jumlahDiminta, string $sumber, ?int $transaksiId = null): void
     {
         if ($jumlahDiminta <= 0) {
             throw new \InvalidArgumentException('Jumlah pemotongan harus lebih dari nol.');
         }
 
-        DB::transaction(function () use ($obat, $jumlahDiminta, $sumber, $pesananId) {
+        DB::transaction(function () use ($obat, $jumlahDiminta, $sumber, $transaksiId) {
             $sisaKebutuhan = $jumlahDiminta;
 
             // Kunci baris: dua worker paralel tidak bisa memotong batch yang sama bersamaan.
@@ -93,7 +93,7 @@ class LayananStok
                     'jenis' => JenisMutasi::Keluar,
                     'jumlah' => $ambil,
                     'sumber' => $sumber,
-                    'pesanan_id' => $pesananId,
+                    'transaksi_id' => $transaksiId,
                 ]);
 
                 $sisaKebutuhan -= $ambil;

@@ -40,9 +40,15 @@ class DatabaseSeeder extends Seeder
         }
 
         $kategori = [
-            'Analgesik' => KategoriObat::query()->firstOrCreate(['slug' => 'analgesik'], ['nama' => 'Analgesik']),
-            'Antibiotik' => KategoriObat::query()->firstOrCreate(['slug' => 'antibiotik'], ['nama' => 'Antibiotik']),
-            'Vitamin' => KategoriObat::query()->firstOrCreate(['slug' => 'vitamin'], ['nama' => 'Vitamin']),
+            'Analgesik' => KategoriObat::query()->firstOrCreate(['slug' => 'analgesik'], [
+                'nama' => 'Analgesik', 'slot' => 1, 'deskripsi' => 'Obat pereda nyeri', 'is_active' => true, 'email' => 'analgesik@makmurjaya.test',
+            ]),
+            'Antibiotik' => KategoriObat::query()->firstOrCreate(['slug' => 'antibiotik'], [
+                'nama' => 'Antibiotik', 'slot' => 2, 'deskripsi' => 'Obat anti infeksi (resep)', 'is_active' => true, 'email' => 'antibiotik@makmurjaya.test',
+            ]),
+            'Vitamin' => KategoriObat::query()->firstOrCreate(['slug' => 'vitamin'], [
+                'nama' => 'Vitamin', 'slot' => 3, 'deskripsi' => 'Suplemen vitamin', 'is_active' => true, 'email' => 'vitamin@makmurjaya.test',
+            ]),
         ];
 
         $pemasok = Pemasok::query()->firstOrCreate(
@@ -53,12 +59,12 @@ class DatabaseSeeder extends Seeder
         $stok = app(LayananStok::class);
 
         $daftarObat = [
-            ['kode' => 'PCT500', 'nama' => 'Paracetamol 500mg', 'kat' => 'Analgesik', 'harga' => 3000, 'min' => 20, 'resep' => false, 'stok' => 80, 'exp' => now()->addMonths(14), 'masuk' => now()->subMonths(2)],
-            ['kode' => 'IBU400', 'nama' => 'Ibuprofen 400mg', 'kat' => 'Analgesik', 'harga' => 4500, 'min' => 15, 'resep' => false, 'stok' => 40, 'exp' => now()->addMonths(8), 'masuk' => now()->subMonths(1)],
-            ['kode' => 'AMX500', 'nama' => 'Amoxicillin 500mg', 'kat' => 'Antibiotik', 'harga' => 8000, 'min' => 10, 'resep' => true, 'stok' => 35, 'exp' => now()->addMonths(10), 'masuk' => now()->subDays(40)],
-            ['kode' => 'CTM4', 'nama' => 'CTM 4mg', 'kat' => 'Analgesik', 'harga' => 2000, 'min' => 25, 'resep' => false, 'stok' => 8, 'exp' => now()->addMonths(6), 'masuk' => now()->subMonths(3)],
-            ['kode' => 'VITC', 'nama' => 'Vitamin C 500mg', 'kat' => 'Vitamin', 'harga' => 5000, 'min' => 12, 'resep' => false, 'stok' => 50, 'exp' => now()->addDays(25), 'masuk' => now()->subMonths(5)],
-            ['kode' => 'VITB', 'nama' => 'Vitamin B Complex', 'kat' => 'Vitamin', 'harga' => 7000, 'min' => 10, 'resep' => false, 'stok' => 22, 'exp' => now()->addMonths(18), 'masuk' => now()->subDays(10)],
+            ['kode' => 'PCT500', 'nama' => 'Paracetamol 500mg', 'kat' => 'Analgesik', 'harga' => 3300.50, 'min' => 20, 'resep' => false, 'stok' => 80, 'exp' => now()->addMonths(14), 'masuk' => now()->subMonths(2)],
+            ['kode' => 'IBU400', 'nama' => 'Ibuprofen 400mg', 'kat' => 'Analgesik', 'harga' => 4950.75, 'min' => 15, 'resep' => false, 'stok' => 40, 'exp' => now()->addMonths(8), 'masuk' => now()->subMonths(1)],
+            ['kode' => 'AMX500', 'nama' => 'Amoxicillin 500mg', 'kat' => 'Antibiotik', 'harga' => 8800.00, 'min' => 10, 'resep' => true, 'stok' => 35, 'exp' => now()->addMonths(10), 'masuk' => now()->subDays(40)],
+            ['kode' => 'CTM4', 'nama' => 'CTM 4mg', 'kat' => 'Analgesik', 'harga' => 2200.25, 'min' => 25, 'resep' => false, 'stok' => 8, 'exp' => now()->addMonths(6), 'masuk' => now()->subMonths(3)],
+            ['kode' => 'VITC', 'nama' => 'Vitamin C 500mg', 'kat' => 'Vitamin', 'harga' => 5500.00, 'min' => 12, 'resep' => false, 'stok' => 50, 'exp' => now()->addDays(25), 'masuk' => now()->subMonths(5)],
+            ['kode' => 'VITB', 'nama' => 'Vitamin B Complex', 'kat' => 'Vitamin', 'harga' => 7700.99, 'min' => 10, 'resep' => false, 'stok' => 22, 'exp' => now()->addMonths(18), 'masuk' => now()->subDays(10)],
         ];
 
         foreach ($daftarObat as $baris) {

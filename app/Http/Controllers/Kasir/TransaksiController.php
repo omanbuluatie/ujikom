@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Kasir;
 
-use App\Enums\StatusPesanan;
+use App\Enums\StatusTransaksi;
 use App\Exceptions\StokTidakCukupException;
 use App\Http\Controllers\Controller;
 use App\Layanan\LayananStok;
-use App\Models\ItemPesanan;
+use App\Models\ItemTransaksi;
 use App\Models\LogAudit;
 use App\Models\Obat;
-use App\Models\Pesanan;
+use App\Models\Transaksi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +17,7 @@ use Illuminate\View\View;
 
 /**
  * UJIKOM — Penjualan counter + sinkronisasi stok dengan online.
- * Kasir memotong stok lewat LayananStok::potongStokFifo() yang sama dengan pesanan online.
+ * Kasir memotong stok lewat LayananStok::potongStokFifo() yang sama dengan transaksi online.
  */
 class TransaksiController extends Controller
 {
@@ -38,7 +38,7 @@ class TransaksiController extends Controller
         ]);
 
         try {
-            $pesanan = DB::transaction(function () use ($request, $data, $stok) {
+            $transaksi = DB::transaction(function () use ($request, $data, $stok) {
                 $baris = [];
                 $total = 0;
 
@@ -48,41 +48,41 @@ class TransaksiController extends Controller
                         continue;
                     }
                     $obat = Obat::query()->findOrFail($obatId);
-                    $subtotal = $obat->harga * $jumlah;
+                    $subtotal = (float) $obat->harga * $jumlah;
                     $baris[] = compact('obat', 'jumlah', 'subtotal');
                     $total += $subtotal;
                 }
 
                 abort_if($baris === [], 422, 'Pilih minimal satu obat.');
 
-                $pesanan = Pesanan::query()->create([
-                    'nomor' => Pesanan::buatNomor(),
+                $transaksi = Transaksi::query()->create([
+                    'kode_transaksi' => Transaksi::buatKode(),
                     'user_id' => $request->user()->id,
-                    'status' => StatusPesanan::Selesai,
+                    'status' => StatusTransaksi::Selesai,
                     'sumber' => 'kasir',
                     'total' => $total,
                     'dibayar_pada' => now(),
                 ]);
 
                 foreach ($baris as $item) {
-                    ItemPesanan::query()->create([
-                        'pesanan_id' => $pesanan->id,
+                    ItemTransaksi::query()->create([
+                        'transaksi_id' => $transaksi->id,
                         'obat_id' => $item['obat']->id,
                         'jumlah' => $item['jumlah'],
                         'harga_satuan' => $item['obat']->harga,
                         'subtotal' => $item['subtotal'],
                     ]);
-                    $stok->potongStokFifo($item['obat'], $item['jumlah'], 'kasir', $pesanan->id);
+                    $stok->potongStokFifo($item['obat'], $item['jumlah'], 'kasir', $transaksi->id);
                 }
 
-                LogAudit::catat('kasir.jual', $pesanan, $pesanan->nomor);
+                LogAudit::catat('kasir.jual', $transaksi, $transaksi->kode_transaksi);
 
-                return $pesanan;
+                return $transaksi;
             });
         } catch (StokTidakCukupException $e) {
             return back()->withErrors(['stok' => $e->getMessage()]);
         }
 
-        return back()->with('status', 'Transaksi '.$pesanan->nomor.' tersimpan. Stok FIFO sudah dipotong.');
+        return back()->with('status', 'Transaksi '.$transaksi->kode_transaksi.' tersimpan. Stok FIFO sudah dipotong.');
     }
 }

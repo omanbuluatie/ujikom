@@ -7,19 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * UJIKOM — Multimedia (unggah gambar resep) + verifikasi apoteker.
- * Satu pesanan : satu berkas resep, cukup untuk uji kompetensi.
+ * REVISI — Resep: status pending/verifikasi/ditolak, catatan_verifikasi.
  */
 class Resep extends Model
 {
     protected $table = 'resep';
 
     protected $fillable = [
-        'pesanan_id',
+        'transaksi_id',
         'berkas_gambar',
         'status',
         'diverifikasi_oleh',
-        'catatan_apoteker',
+        'catatan_verifikasi',
         'diverifikasi_pada',
     ];
 
@@ -31,9 +30,9 @@ class Resep extends Model
         ];
     }
 
-    public function pesanan(): BelongsTo
+    public function transaksi(): BelongsTo
     {
-        return $this->belongsTo(Pesanan::class);
+        return $this->belongsTo(Transaksi::class, 'transaksi_id');
     }
 
     public function apoteker(): BelongsTo

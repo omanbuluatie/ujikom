@@ -25,7 +25,7 @@
     <table>
         <tr><th>Nomor</th><th>Total</th><th>Status</th></tr>
         @foreach($rekap as $p)
-            <tr><td>{{ $p->nomor }}</td><td>{{ number_format($p->total, 0, ',', '.') }}</td><td>{{ $p->status->label() }}</td></tr>
+            <tr><td>{{ $p->kode_transaksi }}</td><td>{{ number_format($p->total, 2, ',', '.') }}</td><td>{{ $p->status->label() }}</td></tr>
         @endforeach
     </table>
 </body>

@@ -31,7 +31,7 @@
 <div class="mt-6 kartu overflow-hidden">
     <div class="strip-fifo">Tautan aktivasi email (demo)</div>
     <p class="border-b border-[#e6ecf0] px-4 py-2 text-xs text-[#3D4C58]">
-        Tautan tersimpan otomatis saat pasien daftar atau kirim ulang verifikasi. Salin/buka tautan untuk demo tanpa membaca <code class="font-mono">storage/logs/laravel.log</code>.
+        Tautan tersimpan otomatis saat pasien daftar atau kirim ulang verifikasi. <strong>Penting:</strong> buka tautan saat login sebagai pelanggan yang bersangkutan (logout admin dulu, atau tab/incognito). Alternatif: verifikasi manual di menu Pelanggan.
     </p>
     <div class="max-h-96 overflow-auto">
         <table class="tabel-meja text-sm">

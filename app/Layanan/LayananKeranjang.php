@@ -49,7 +49,7 @@ class LayananKeranjang
     }
 
     /**
-     * @return Collection<int, array{obat: Obat, jumlah: int, subtotal: int}>
+     * @return Collection<int, array{obat: Obat, jumlah: int, subtotal: float}>
      */
     public function rincian(): Collection
     {
@@ -69,13 +69,13 @@ class LayananKeranjang
             return [
                 'obat' => $obat,
                 'jumlah' => $jumlah,
-                'subtotal' => $obat->harga * $jumlah,
+                'subtotal' => (float) $obat->harga * $jumlah,
             ];
         })->filter()->values();
     }
 
-    public function total(): int
+    public function total(): float
     {
-        return (int) $this->rincian()->sum('subtotal');
+        return (float) $this->rincian()->sum('subtotal');
     }
 }

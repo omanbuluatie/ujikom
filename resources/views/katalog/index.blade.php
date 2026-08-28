@@ -82,7 +82,7 @@
                         @if($obat->butuh_resep)<span class="tiket tiket--tolak ml-1">Resep</span>@endif
                     </p>
                     <h2 class="font-display mt-1 text-lg leading-snug"><a href="{{ route('katalog.detail', $obat) }}">{{ $obat->nama }}</a></h2>
-                    <p class="mt-auto pt-3 font-mono text-sm">Rp {{ number_format($obat->harga, 0, ',', '.') }}</p>
+                    <p class="mt-auto pt-3 font-mono text-sm">Rp {{ number_format($obat->harga, 2, ',', '.') }}</p>
                     @auth
                         <form method="POST" action="{{ route('keranjang.tambah', $obat) }}" class="mt-3">
                             @csrf
