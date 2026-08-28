@@ -19,6 +19,7 @@
         <span>Total</span><span>Rp {{ number_format($total, 2, ',', '.') }}</span>
     </li>
 </ul>
+<p class="mt-3 text-sm text-[#3D4C58]">Saat checkout, sistem menambahkan <strong>kode unik 3 digit</strong> ke total transfer agar pembayaran mudah diverifikasi.</p>
 <form method="POST" action="{{ route('transaksi.buat') }}" class="mt-6 space-y-4">
     @csrf
     <div>

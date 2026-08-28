@@ -104,7 +104,7 @@ class TransaksiController extends Controller
 
         return response()->streamDownload(function () use ($request) {
             $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['kode_transaksi', 'pelanggan', 'email', 'status', 'total', 'metode', 'sumber', 'dibayar_pada', 'created_at']);
+            fputcsv($handle, ['kode_transaksi', 'pelanggan', 'email', 'status', 'total', 'kode_unik', 'metode', 'sumber', 'dibayar_pada', 'created_at']);
 
             Transaksi::query()
                 ->with('pelanggan')
@@ -118,7 +118,8 @@ class TransaksiController extends Controller
                             $t->pelanggan?->email,
                             $t->status->value,
                             $t->total,
-                            $t->metode_pembayaran,
+                            $t->kode_unik,
+                            $t->metode_pembayaran?->value,
                             $t->sumber,
                             $t->dibayar_pada?->toDateTimeString(),
                             $t->created_at?->toDateTimeString(),

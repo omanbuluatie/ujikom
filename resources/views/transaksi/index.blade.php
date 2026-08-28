@@ -58,8 +58,14 @@
                     @if($t->resep)
                         <p class="mt-2 text-xs text-[#3D4C58]">Resep: {{ $t->resep->status->label() }}</p>
                     @endif
+                    @if($t->kode_unik)
+                        <p class="px-4 text-xs text-[#3D4C58]">
+                            Total transfer: <span class="font-mono">Rp {{ number_format($t->total, 2, ',', '.') }}</span>
+                            (kode unik +{{ $t->kode_unik }})
+                        </p>
+                    @endif
                     @if($t->metode_pembayaran)
-                        <p class="mt-1 text-xs text-[#3D4C58]">Bayar via {{ $t->metode_pembayaran }}</p>
+                        <p class="mt-1 px-4 pb-1 text-xs text-[#3D4C58]">Bayar via {{ $t->metode_pembayaran->label() }}</p>
                     @endif
                 </div>
             </article>

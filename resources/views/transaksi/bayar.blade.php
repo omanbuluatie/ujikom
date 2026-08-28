@@ -11,15 +11,34 @@
     <div class="papan-antrian">
         <p class="text-[11px] uppercase opacity-70">Kode transaksi</p>
         <p class="angka">{{ $transaksi->kode_transaksi }}</p>
-        <p class="mt-2 text-sm">Rp {{ number_format($transaksi->total, 2, ',', '.') }}</p>
+        <dl class="mt-3 space-y-1 text-sm">
+            <div class="flex justify-between opacity-80">
+                <dt>Subtotal obat</dt>
+                <dd class="font-mono">Rp {{ number_format($transaksi->subtotalItem(), 2, ',', '.') }}</dd>
+            </div>
+            <div class="flex justify-between opacity-80">
+                <dt>Kode unik</dt>
+                <dd class="font-mono">+ {{ $transaksi->kode_unik }}</dd>
+            </div>
+            <div class="flex justify-between border-t border-white/20 pt-2 font-semibold">
+                <dt>Total transfer</dt>
+                <dd class="font-mono text-base">Rp {{ number_format($transaksi->total, 2, ',', '.') }}</dd>
+            </div>
+        </dl>
+        <p class="mt-2 text-[11px] opacity-70">Transfer tepat sesuai nominal di atas (termasuk 3 digit kode unik).</p>
     </div>
     <div class="p-5">
         <p class="text-sm text-[#3D4C58]">Unggah bukti transfer/pembayaran. Setelah dikirim, worker memverifikasi dan status berubah otomatis (demo) atau admin meninjau bukti.</p>
         <form method="POST" action="{{ route('transaksi.proses-bayar', $transaksi) }}" enctype="multipart/form-data" class="mt-5 space-y-4">
             @csrf
             <div>
-                <label class="label-lapangan">Metode pembayaran</label>
-                <input name="metode_pembayaran" required class="input-lapangan" placeholder="Transfer BCA / QRIS / dll" value="{{ old('metode_pembayaran') }}">
+                <label class="label-lapangan" for="metode_pembayaran">Metode pembayaran</label>
+                <select name="metode_pembayaran" id="metode_pembayaran" required class="input-lapangan">
+                    <option value="" disabled @selected(! old('metode_pembayaran'))>— Pilih metode —</option>
+                    @foreach(\App\Enums\MetodePembayaran::cases() as $metode)
+                        <option value="{{ $metode->value }}" @selected(old('metode_pembayaran') === $metode->value)>{{ $metode->label() }}</option>
+                    @endforeach
+                </select>
             </div>
             @include('komponen.pilih-berkas', [
                 'name' => 'bukti_pembayaran',

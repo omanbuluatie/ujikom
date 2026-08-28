@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\MetodePembayaran;
 use App\Enums\StatusTransaksi;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * REVISI — Transaksi (dulu pesanan).
  * kode_transaksi, status pending/diproses/selesai/dibatalkan,
- * metode_pembayaran, bukti_pembayaran, alamat_pengiriman.
+ * metode_pembayaran, bukti_pembayaran, alamat_pengiriman, kode_unik (3 digit).
  */
 class Transaksi extends Model
 {
@@ -23,6 +24,7 @@ class Transaksi extends Model
         'status',
         'sumber',
         'total',
+        'kode_unik',
         'metode_pembayaran',
         'bukti_pembayaran',
         'alamat_pengiriman',
@@ -35,6 +37,8 @@ class Transaksi extends Model
         return [
             'status' => StatusTransaksi::class,
             'total' => 'decimal:2',
+            'kode_unik' => 'integer',
+            'metode_pembayaran' => MetodePembayaran::class,
             'dibayar_pada' => 'datetime',
         ];
     }
@@ -67,5 +71,17 @@ class Transaksi extends Model
     public static function buatKode(): string
     {
         return 'TRX-'.now()->format('Ymd').'-'.str_pad((string) ((static::max('id') ?? 0) + 1), 4, '0', STR_PAD_LEFT);
+    }
+
+    /** Subtotal dari item (belum termasuk kode unik). */
+    public function subtotalItem(): float
+    {
+        return (float) $this->item()->sum('subtotal');
+    }
+
+    /** Generate kode unik 3 digit (100–999) untuk membedakan nominal transfer. */
+    public static function buatKodeUnik(): int
+    {
+        return random_int(100, 999);
     }
 }

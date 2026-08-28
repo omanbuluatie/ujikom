@@ -10,14 +10,17 @@
         <p class="mt-3 text-sm"><span class="font-semibold">Alamat:</span> {{ $transaksi->alamat_pengiriman }}</p>
     @endif
     @if($transaksi->metode_pembayaran)
-        <p class="text-sm">Metode: {{ $transaksi->metode_pembayaran }}</p>
+        <p class="text-sm">Metode: {{ $transaksi->metode_pembayaran->label() }}</p>
     @endif
     <ul class="mt-4 text-sm">
         @foreach($transaksi->item as $item)
             <li class="flex justify-between border-b py-2"><span>{{ $item->obat->nama }} × {{ $item->jumlah }}</span><span class="font-mono">{{ number_format($item->subtotal, 2, ',', '.') }}</span></li>
         @endforeach
     </ul>
-    <p class="mt-4 font-display text-xl">Total Rp {{ number_format($transaksi->total, 2, ',', '.') }}</p>
+    @if($transaksi->kode_unik)
+        <p class="mt-4 text-sm text-[#3D4C58]">Subtotal Rp {{ number_format($transaksi->subtotalItem(), 2, ',', '.') }} + kode unik {{ $transaksi->kode_unik }}</p>
+    @endif
+    <p class="mt-1 font-display text-xl">Total transfer Rp {{ number_format($transaksi->total, 2, ',', '.') }}</p>
 
     @if($transaksi->bukti_pembayaran)
         <div class="mt-4">

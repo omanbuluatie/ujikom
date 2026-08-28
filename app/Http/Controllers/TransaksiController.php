@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\MetodePembayaran;
 use App\Enums\StatusResep;
 use App\Enums\StatusTransaksi;
 use App\Jobs\JobProsesPembayaran;
@@ -14,6 +15,7 @@ use App\Models\Transaksi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 /**
@@ -63,12 +65,16 @@ class TransaksiController extends Controller
         ]);
 
         $transaksi = DB::transaction(function () use ($request, $rincian, $keranjang, $data) {
+            $subtotal = $keranjang->total();
+            $kodeUnik = Transaksi::buatKodeUnik();
+
             $transaksi = Transaksi::query()->create([
                 'kode_transaksi' => Transaksi::buatKode(),
                 'user_id' => $request->user()->id,
                 'status' => StatusTransaksi::Pending,
                 'sumber' => 'online',
-                'total' => $keranjang->total(),
+                'total' => $subtotal + $kodeUnik,
+                'kode_unik' => $kodeUnik,
                 'alamat_pengiriman' => $data['alamat_pengiriman'],
                 'catatan' => $data['catatan'] ?? null,
             ]);
@@ -118,7 +124,7 @@ class TransaksiController extends Controller
         }
 
         $data = $request->validate([
-            'metode_pembayaran' => ['required', 'string', 'max:60'],
+            'metode_pembayaran' => ['required', Rule::enum(MetodePembayaran::class)],
             'bukti_pembayaran' => ['required', 'image', 'max:4096'],
         ]);
 
