@@ -39,6 +39,19 @@ class TransaksiController extends Controller
         ]);
     }
 
+    /**
+     * Detail + timeline riwayat transaksi pasien.
+     * Status dibaca dari DB — bisa dicek kapan saja, tidak bergantung worker sedang jalan.
+     */
+    public function show(Transaksi $transaksi): View
+    {
+        $this->otorisasi($transaksi);
+
+        return view('transaksi.show', [
+            'transaksi' => $transaksi->load('item.obat', 'resep', 'notifikasi'),
+        ]);
+    }
+
     public function checkout(LayananKeranjang $keranjang): View|RedirectResponse
     {
         $rincian = $keranjang->rincian();

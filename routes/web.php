@@ -58,6 +58,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
     Route::get('/transaksi/checkout', [TransaksiController::class, 'checkout'])->name('transaksi.checkout');
     Route::post('/transaksi', [TransaksiController::class, 'buat'])->name('transaksi.buat');
+    Route::get('/transaksi/{transaksi}', [TransaksiController::class, 'show'])->name('transaksi.show');
     Route::get('/transaksi/{transaksi}/bayar', [TransaksiController::class, 'bayar'])->name('transaksi.bayar');
     Route::post('/transaksi/{transaksi}/bayar', [TransaksiController::class, 'prosesBayar'])->name('transaksi.proses-bayar');
     Route::post('/transaksi/{transaksi}/resep', [TransaksiController::class, 'unggahResep'])->name('transaksi.resep');
